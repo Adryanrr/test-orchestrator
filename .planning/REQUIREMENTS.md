@@ -1,26 +1,26 @@
-# Requirements
+# Requisitos
 
-## v1 Requirements
+## Requisitos v1
 
-### Architecture
-- [ ] **ARCH-01**: Setup Python monorepo structure following BMI/TT back-v3 patterns
-- [ ] **ARCH-02**: Configure Semantic Git Commit hooks or guidelines
-- [ ] **ARCH-03**: Setup unified README.md for both projects
+### Arquitetura
+- [ ] **ARCH-01**: Configurar estrutura de monorepo Python seguindo padrões do BMI/TT back-v3
+- [ ] **ARCH-02**: Configurar hooks ou diretrizes para Git Commits Semânticos
+- [ ] **ARCH-03**: Configurar um README.md unificado para ambos os projetos
 
-### API Test Automation
-- [ ] **API-01**: Automate tests for Petstore 'User' endpoint
-- [ ] **API-02**: Automate tests for Petstore 'Store' endpoint
-- [ ] **API-03**: Automate tests for Petstore 'Pet' endpoint
+### Automação de Testes de API
+- [ ] **API-01**: Automatizar testes para o endpoint 'User' do Petstore
+- [ ] **API-02**: Automatizar testes para o endpoint 'Store' do Petstore
+- [ ] **API-03**: Automatizar testes para o endpoint 'Pet' do Petstore
 
-### Web Test Automation
-- [ ] **WEB-01**: Implement Selenium Page Objects for SauceDemo
-- [ ] **WEB-02**: Automate E2E flow: Login, Add Product to Cart, Finalize Purchase
+### Automação de Testes Web
+- [ ] **WEB-01**: Implementar Page Objects com Selenium para o SauceDemo
+- [ ] **WEB-02**: Automatizar fluxo E2E: Login, Adicionar Produto ao Carrinho, Finalizar Compra
 
 ### CI/CD
-- [ ] **CI-01**: Configure GitHub Actions workflow to run API tests
-- [ ] **CI-02**: Configure GitHub Actions workflow to run Web tests
+- [ ] **CI-01**: Configurar workflow do GitHub Actions para rodar os testes de API
+- [ ] **CI-02**: Configurar workflow do GitHub Actions para rodar os testes Web
 
-## Out of Scope
+## Fora de Escopo
 
-- Testing endpoints or pages outside of the requested scope.
-- Load or performance testing.
+- Testar endpoints ou páginas fora do escopo solicitado.
+- Testes de carga ou performance.

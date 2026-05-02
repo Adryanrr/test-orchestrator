@@ -1,42 +1,42 @@
 # Roadmap
 
-**4 phases** | **10 requirements mapped** | All v1 requirements covered ✓
+**4 fases** | **10 requisitos mapeados** | Todos os requisitos v1 cobertos ✓
 
-| # | Phase | Goal | Requirements | Success Criteria |
+| # | Fase | Objetivo | Requisitos | Critérios de Sucesso |
 |---|-------|------|--------------|------------------|
-| 1 | Infrastructure Setup | Initialize monorepo, standards, and CI base | ARCH-01, ARCH-02, ARCH-03 | 3 |
-| 2 | API Automation | Cover all Swagger Petstore endpoints | API-01, API-02, API-03 | 3 |
-| 3 | Web Automation | Complete SauceDemo E2E using Selenium | WEB-01, WEB-02 | 2 |
-| 4 | Finalization & CI | Ensure pipeline runs all tests and docs are ready | CI-01, CI-02 | 2 |
+| 1 | Configuração de Infraestrutura | Inicializar monorepo, padrões e base do CI | ARCH-01, ARCH-02, ARCH-03 | 3 |
+| 2 | Automação de API | Cobrir todos os endpoints do Swagger Petstore | API-01, API-02, API-03 | 3 |
+| 3 | Automação Web | Concluir o fluxo E2E do SauceDemo usando Selenium | WEB-01, WEB-02 | 2 |
+| 4 | Finalização & CI | Garantir que a pipeline rode todos os testes e a documentação esteja pronta | CI-01, CI-02 | 2 |
 
-### Phase Details
+### Detalhes das Fases
 
-**Phase 1: Infrastructure Setup**
-Goal: Initialize monorepo, standards, and CI base
-Requirements: ARCH-01, ARCH-02, ARCH-03
-Success criteria:
-1. Repository has correct directory structure for API and Web.
-2. Initial GitHub Actions YAML file is present.
-3. Git branching model (main, developer, module branches) is established locally.
+**Fase 1: Configuração de Infraestrutura**
+Objetivo: Inicializar monorepo, padrões e base do CI
+Requisitos: ARCH-01, ARCH-02, ARCH-03
+Critérios de Sucesso:
+1. O repositório tem a estrutura de diretórios correta para API e Web.
+2. O arquivo YAML inicial do GitHub Actions está presente.
+3. O modelo de ramificação do git (main, developer, branches de módulo) foi estabelecido localmente.
 
-**Phase 2: API Automation**
-Goal: Cover all Swagger Petstore endpoints
-Requirements: API-01, API-02, API-03
-Success criteria:
-1. 'User' endpoint tests pass successfully.
-2. 'Store' endpoint tests pass successfully.
-3. 'Pet' endpoint tests pass successfully.
+**Fase 2: Automação de API**
+Objetivo: Cobrir todos os endpoints do Swagger Petstore
+Requisitos: API-01, API-02, API-03
+Critérios de Sucesso:
+1. Os testes do endpoint 'User' passam com sucesso.
+2. Os testes do endpoint 'Store' passam com sucesso.
+3. Os testes do endpoint 'Pet' passam com sucesso.
 
-**Phase 3: Web Automation**
-Goal: Complete SauceDemo E2E using Selenium
-Requirements: WEB-01, WEB-02
-Success criteria:
-1. Page Objects are cleanly separated from test logic.
-2. E2E test runs successfully from login to checkout.
+**Fase 3: Automação Web**
+Objetivo: Concluir o fluxo E2E do SauceDemo usando Selenium
+Requisitos: WEB-01, WEB-02
+Critérios de Sucesso:
+1. Os Page Objects estão claramente separados da lógica de testes.
+2. O teste E2E roda com sucesso do login ao checkout.
 
-**Phase 4: Finalization & CI**
-Goal: Ensure pipeline runs all tests and docs are ready
-Requirements: CI-01, CI-02
-Success criteria:
-1. GitHub Actions pipeline executes both API and Web tests automatically.
-2. README.md contains execution instructions, technologies, and prints.
+**Fase 4: Finalização & CI**
+Objetivo: Garantir que a pipeline rode todos os testes e a documentação esteja pronta
+Requisitos: CI-01, CI-02
+Critérios de Sucesso:
+1. A pipeline do GitHub Actions executa tanto os testes de API quanto os testes Web automaticamente.
+2. O README.md contém as instruções de execução, tecnologias utilizadas e prints da execução.

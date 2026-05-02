@@ -1,70 +1,70 @@
 # Test Orchestrator
 
-## What This Is
+## O que é isso
 
-A Python-based automated testing monorepo, following an architecture similar to BMI but in Python, and adopting the backend standard from TT's back-v3. It includes API test automation for Swagger Petstore and E2E Web test automation for SauceDemo using Selenium. The project integrates with a CI pipeline (GitHub Actions) to execute both test suites.
+Um monorepo de automação de testes em Python, seguindo uma arquitetura semelhante à do BMI, mas em Python, e adotando o padrão de backend do back-v3 da TT. Inclui automação de testes de API para o Swagger Petstore e automação de testes Web E2E para o SauceDemo usando Selenium. O projeto se integra a uma pipeline de CI (GitHub Actions) para executar ambas as suítes de teste.
 
-## Core Value
+## Valor Central
 
-Demonstrate robust test automation capability with excellent code organization, design patterns (like Page Objects), semantic commits, and continuous integration execution.
+Demonstrar capacidade robusta em automação de testes com excelente organização de código, padrões de projeto (como Page Objects), commits semânticos e execução contínua via CI/CD.
 
-## Requirements
+## Requisitos
 
-### Validated
+### Validados
 
-(None yet — ship to validate)
+(Nenhum ainda — entregue para validar)
 
-### Active
+### Ativos
 
-- [ ] Python Monorepo structure setup
-- [ ] API Automation (Swagger Petstore) covering User, Store, and Pet endpoints
-- [ ] Web Automation (SauceDemo) using Selenium with an E2E flow (login, add to cart, checkout)
-- [ ] CI Pipeline executing both automation projects
-- [ ] Documentation (README.md) with instructions, technologies, and execution prints
-- [ ] Adherence to Semantic Commits and specific Branching strategy (main, developer, module branches)
+- [ ] Configuração da estrutura do monorepo em Python
+- [ ] Automação de API (Swagger Petstore) cobrindo os endpoints User, Store e Pet
+- [ ] Automação Web (SauceDemo) usando Selenium com fluxo E2E (login, adicionar ao carrinho, finalizar compra)
+- [ ] Pipeline de CI executando ambos os projetos de automação
+- [ ] Documentação (README.md) com instruções, tecnologias e prints de execução
+- [ ] Uso de Commits Semânticos e estratégia de ramificação (main, developer, e branches de módulo)
 
-### Out of Scope
+### Fora de Escopo
 
-- [ ] Implementation of the actual APIs or Web applications — This project focuses purely on the test automation of existing services.
+- [ ] Implementação das APIs ou aplicações web reais — O foco do projeto é exclusivamente na automação de testes dos serviços existentes.
 
-## Context
+## Contexto
 
-This is an assignment to evaluate technical capacity in test automation.
-- **Due Dates:** Presentations on May 7 and 14.
-- **Evaluation Criteria:** Code quality, organization, reusability, test strategy, CI/CD execution, and content domain.
-- **Commit constraints:** Meaningful semantic commits (feat, fix, etc.) will be evaluated.
+Este é um trabalho escolar/acadêmico para avaliar a capacidade técnica no desenvolvimento de automação de testes.
+- **Datas:** Apresentações nos dias 07 e 14 de maio.
+- **Critérios de Avaliação:** Qualidade do código, organização, reusabilidade, estratégia de testes, execução em CI/CD e domínio do conteúdo.
+- **Restrição de Commits:** Commits devem seguir um padrão semântico (feat, fix, etc.) e serão avaliados.
 
-## Constraints
+## Restrições
 
-- **Language**: Python
-- **Tools**: Selenium for Web, standard Python libraries/requests for API
-- **Repository Structure**: Single repository / monorepo for both automations with a single README.
-- **Comments**: Only essential comments allowed.
+- **Linguagem**: Python
+- **Ferramentas**: Selenium para Web, bibliotecas padrão do Python/requests para API
+- **Estrutura do Repositório**: Único repositório / monorepo para ambas as automações com um único README.
+- **Comentários**: Permitidos apenas comentários essenciais.
 
-## Key Decisions
+## Principais Decisões
 
-| Decision | Rationale | Outcome |
+| Decisão | Justificativa | Resultado |
 |----------|-----------|---------|
-| Use of pytest | Standard and powerful test framework in Python | — Pending |
-| GitHub Actions for CI | Easy integration with GitHub repositories for pipeline execution | — Pending |
-| Page Object Model | Specified as a best practice for web test automation | — Pending |
+| Uso do pytest | Framework de testes padrão e poderoso em Python | — Pendente |
+| GitHub Actions para CI | Fácil integração com repositórios GitHub para execução da pipeline | — Pendente |
+| Page Object Model | Especificado como boa prática para automação de testes web | — Pendente |
 
 ---
-*Last updated: 2026-05-02 after initialization*
+*Atualizado em: 2026-05-02 após a inicialização*
 
-## Evolution
+## Evolução
 
-This document evolves at phase transitions and milestone boundaries.
+Este documento evolui nas transições de fase e limites de milestone.
 
-**After each phase transition** (via `/gsd-transition`):
-1. Requirements invalidated? → Move to Out of Scope with reason
-2. Requirements validated? → Move to Validated with phase reference
-3. New requirements emerged? → Add to Active
-4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
+**Após cada transição de fase** (via `/gsd-transition`):
+1. Requisitos invalidados? → Mover para Fora de Escopo com o motivo
+2. Requisitos validados? → Mover para Validados com referência à fase
+3. Novos requisitos surgiram? → Adicionar em Ativos
+4. Decisões a registrar? → Adicionar em Principais Decisões
+5. "O que é isso" ainda preciso? → Atualizar se houve mudança
 
-**After each milestone** (via `/gsd-complete-milestone`):
-1. Full review of all sections
-2. Core Value check — still the right priority?
-3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+**Após cada milestone** (via `/gsd-complete-milestone`):
+1. Revisão completa de todas as seções
+2. Verificação do Valor Central — ainda é a prioridade certa?
+3. Auditoria de Fora de Escopo — os motivos ainda são válidos?
+4. Atualizar Contexto com o estado atual
