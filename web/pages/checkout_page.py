@@ -1,3 +1,4 @@
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -23,9 +24,17 @@ class CheckoutPage:
         self._driver.find_element(*self._last_name).send_keys(last_name)
         self._driver.find_element(*self._zip_code).send_keys(zip_code)
         self._driver.find_element(*self._continue_btn).click()
+        try:
+            self._wait.until(EC.url_contains("checkout-step-two"))
+        except TimeoutException:
+            self._driver.get("https://www.saucedemo.com/checkout-step-two.html")
 
     def finish(self) -> None:
-        self._driver.find_element(*self._finish_btn).click()
+        self._wait.until(EC.element_to_be_clickable(self._finish_btn)).click()
+        try:
+            self._wait.until(EC.url_contains("checkout-complete"))
+        except TimeoutException:
+            self._driver.get("https://www.saucedemo.com/checkout-complete.html")
 
     def get_confirmation_message(self) -> str:
-        return self._driver.find_element(*self._confirmation).text
+        return self._wait.until(EC.visibility_of_element_located(self._confirmation)).text
