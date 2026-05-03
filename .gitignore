@@ -9,3 +9,5 @@ reports/*
 dist/
 build/
 .DS_Store
+.venv/
+venv/
