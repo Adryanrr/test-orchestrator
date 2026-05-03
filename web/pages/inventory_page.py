@@ -1,4 +1,3 @@
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,7 +24,4 @@ class InventoryPage:
 
     def go_to_cart(self) -> None:
         self._wait.until(EC.element_to_be_clickable(self._cart_link)).click()
-        try:
-            self._wait.until(EC.url_contains("cart"))
-        except TimeoutException:
-            self._driver.get("https://www.saucedemo.com/cart.html")
+        self._wait.until(EC.url_contains("cart"))

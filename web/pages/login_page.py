@@ -1,4 +1,3 @@
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,15 +16,12 @@ class LoginPage:
 
     def open(self) -> None:
         self._driver.get(self.URL)
-        self._wait.until(EC.presence_of_element_located(self._username))
+        self._wait.until(EC.visibility_of_element_located(self._username))
 
     def fill_credentials(self, username: str, password: str) -> None:
-        self._driver.find_element(*self._username).send_keys(username)
-        self._driver.find_element(*self._password).send_keys(password)
+        self._wait.until(EC.visibility_of_element_located(self._username)).send_keys(username)
+        self._wait.until(EC.visibility_of_element_located(self._password)).send_keys(password)
 
     def click_login(self) -> None:
-        self._driver.find_element(*self._login_btn).click()
-        try:
-            self._wait.until(EC.url_contains("inventory"))
-        except TimeoutException:
-            self._driver.get("https://www.saucedemo.com/inventory.html")
+        self._wait.until(EC.element_to_be_clickable(self._login_btn)).click()
+        self._wait.until(EC.url_contains("inventory"))
