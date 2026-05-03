@@ -23,15 +23,13 @@ class CheckoutPage:
         self._wait.until(EC.visibility_of_element_located(self._last_name)).send_keys(last_name)
         self._wait.until(EC.visibility_of_element_located(self._zip_code)).send_keys(zip_code)
         cont = self._wait.until(EC.element_to_be_clickable(self._continue_btn))
-        self._driver.execute_script("arguments[0].scrollIntoView(true);", cont)
-        cont.click()
-        self._wait.until(EC.url_contains("/checkout-step-two.html"))
+        self._driver.execute_script("arguments[0].click();", cont)
+        self._wait.until(EC.url_contains("checkout-step-two.html"))
 
     def finish(self) -> None:
         btn = self._wait.until(EC.element_to_be_clickable(self._finish_btn))
-        self._driver.execute_script("arguments[0].scrollIntoView(true);", btn)
-        btn.click()
-        self._wait.until(EC.url_contains("/checkout-complete.html"))
+        self._driver.execute_script("arguments[0].click();", btn)
+        self._wait.until(EC.url_contains("checkout-complete.html"))
 
     def get_confirmation_message(self) -> str:
         return self._wait.until(EC.visibility_of_element_located(self._confirmation)).text
