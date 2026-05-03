@@ -1,15 +1,19 @@
+import os
 import random
 import pytest
+import requests
 from api.services.user_service import UserService
+
+_TEST_PASSWORD = os.getenv("TEST_USER_PASSWORD", "changeme-test-only")
 
 
 @pytest.fixture
-def user_service(api_session, base_url):
+def user_service(api_session: requests.Session, base_url: str) -> UserService:
     return UserService(api_session, base_url)
 
 
 @pytest.fixture
-def user_payload():
+def user_payload() -> dict[str, object]:
     uid = random.randint(100000, 999999)
     return {
         "id": uid,
@@ -17,7 +21,7 @@ def user_payload():
         "firstName": "Test",
         "lastName": "User",
         "email": f"test_{uid}@example.com",
-        "password": "password123",
+        "password": _TEST_PASSWORD,
         "phone": "5511999999999",
         "userStatus": 1,
     }
