@@ -51,10 +51,16 @@ def test_update_pet_returns_200(pet_service: PetService, pet_payload: dict[str, 
     assert response.json()["name"] == "UpdatedDog"
 
 
-def test_find_pets_by_status_returns_list(pet_service: PetService) -> None:
+def test_find_pets_by_status_returns_list(
+    pet_service: PetService, pet_payload: dict[str, object]
+) -> None:
+    pet_id: int = pet_payload["id"]  # type: ignore[assignment]
+    pet_service.create(pet_payload)
     response = pet_service.find_by_status(_DEFAULT_PET_STATUS)
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    pets = response.json()
+    assert isinstance(pets, list)
+    assert any(p["id"] == pet_id for p in pets)
 
 
 def test_delete_pet_returns_200(pet_service: PetService, pet_payload: dict[str, object]) -> None:
