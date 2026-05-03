@@ -35,7 +35,7 @@ class CheckoutPage:
     def finish(self) -> None:
         btn = self._wait.until(EC.element_to_be_clickable(self._finish_btn))
         self._driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-        ActionChains(self._driver).move_to_element(btn).click().perform()
+        btn.click()
         self._wait.until(EC.url_contains("checkout-complete.html"))
 
     def get_confirmation_message(self) -> str:
