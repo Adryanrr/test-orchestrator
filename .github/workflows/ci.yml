@@ -1,0 +1,67 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r api/requirements.txt
+      - name: Run API tests
+        run: pytest api/tests/ --junitxml=reports/api-results.xml --html=reports/api-report.html --self-contained-html
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-report
+          path: reports/
+
+  web-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Install dependencies
+        run: pip install -r web/requirements.txt
+      - name: Run Web tests
+        run: pytest web/tests/ --junitxml=reports/web-results.xml --html=reports/web-report.html --self-contained-html
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: web-report
+          path: reports/
+
+  auto-merge:
+    needs: [api-tests, web-tests]
+    runs-on: ubuntu-latest
+    # Executa apenas se todos os testes passarem, for um PR, e o alvo for a branch developer
+    if: success() && github.event_name == 'pull_request' && github.base_ref == 'developer'
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
