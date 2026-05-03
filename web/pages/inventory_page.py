@@ -23,5 +23,7 @@ class InventoryPage:
         self._wait.until(EC.visibility_of_element_located(self._cart_badge))
 
     def go_to_cart(self) -> None:
-        self._wait.until(EC.element_to_be_clickable(self._cart_link)).click()
-        self._wait.until(EC.url_contains("cart"))
+        cart_link = self._wait.until(EC.element_to_be_clickable(self._cart_link))
+        self._driver.execute_script("arguments[0].scrollIntoView(true);", cart_link)
+        cart_link.click()
+        self._wait.until(EC.url_contains("/cart.html"))
