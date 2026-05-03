@@ -2,7 +2,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.action_chains import ActionChains
+
+JS_SET_INPUT = """
+var nativeSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype, 'value').set;
+nativeSetter.call(arguments[0], arguments[1]);
+arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
+arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+"""
 
 
 class CheckoutPage:
@@ -17,25 +24,24 @@ class CheckoutPage:
         self._driver = driver
         self._wait = WebDriverWait(driver, 10)
 
+    def _set_input(self, locator: tuple, value: str) -> None:
+        element = self._wait.until(EC.visibility_of_element_located(locator))
+        self._driver.execute_script(JS_SET_INPUT, element, value)
+
+    def _js_click(self, locator: tuple) -> None:
+        element = self._wait.until(EC.element_to_be_clickable(locator))
+        self._driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+        self._driver.execute_script("arguments[0].click();", element)
+
     def fill_info(self, first_name: str, last_name: str, zip_code: str) -> None:
-        fn = self._wait.until(EC.visibility_of_element_located(self._first_name))
-        ActionChains(self._driver).move_to_element(fn).click().send_keys(first_name).perform()
-        
-        ln = self._wait.until(EC.visibility_of_element_located(self._last_name))
-        ActionChains(self._driver).move_to_element(ln).click().send_keys(last_name).perform()
-        
-        zp = self._wait.until(EC.visibility_of_element_located(self._zip_code))
-        ActionChains(self._driver).move_to_element(zp).click().send_keys(zip_code).perform()
-        
-        cont = self._wait.until(EC.element_to_be_clickable(self._continue_btn))
-        self._driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", cont)
-        ActionChains(self._driver).move_to_element(cont).click().perform()
+        self._set_input(self._first_name, first_name)
+        self._set_input(self._last_name, last_name)
+        self._set_input(self._zip_code, zip_code)
+        self._js_click(self._continue_btn)
         self._wait.until(EC.url_contains("checkout-step-two.html"))
 
     def finish(self) -> None:
-        btn = self._wait.until(EC.element_to_be_clickable(self._finish_btn))
-        self._driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-        btn.click()
+        self._js_click(self._finish_btn)
         self._wait.until(EC.url_contains("checkout-complete.html"))
 
     def get_confirmation_message(self) -> str:
