@@ -4,8 +4,7 @@ Monorepo com automação de testes de API e Web E2E em Python.
 
 | Pipeline | Status |
 |----------|--------|
-| API Tests | ![API Tests](https://github.com/Adryanrr/test-orchestrator/actions/workflows/api-tests.yml/badge.svg) |
-| Web Tests | ![Web Tests](https://github.com/Adryanrr/test-orchestrator/actions/workflows/web-tests.yml/badge.svg) |
+| API & Web Tests | ![CI Pipeline](https://github.com/Adryanrr/test-orchestrator/actions/workflows/ci.yml/badge.svg) |
 
 ## Tecnologias
 
@@ -29,8 +28,7 @@ test-orchestrator/
 │   └── conftest.py   # Fixture: driver (Chrome headless)
 ├── .github/
 │   └── workflows/
-│       ├── api-tests.yml
-│       └── web-tests.yml
+│       └── ci.yml
 └── pyproject.toml
 ```
 
