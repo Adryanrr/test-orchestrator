@@ -17,17 +17,9 @@ class CheckoutPage:
         self._wait = WebDriverWait(driver, 10)
 
     def fill_info(self, first_name: str, last_name: str, zip_code: str) -> None:
-        fn = self._wait.until(EC.element_to_be_clickable(self._first_name))
-        fn.clear()
-        fn.send_keys(first_name)
-        
-        ln = self._wait.until(EC.element_to_be_clickable(self._last_name))
-        ln.clear()
-        ln.send_keys(last_name)
-        
-        zp = self._wait.until(EC.element_to_be_clickable(self._zip_code))
-        zp.clear()
-        zp.send_keys(zip_code)
+        self._wait.until(EC.visibility_of_element_located(self._first_name)).send_keys(first_name)
+        self._wait.until(EC.visibility_of_element_located(self._last_name)).send_keys(last_name)
+        self._wait.until(EC.visibility_of_element_located(self._zip_code)).send_keys(zip_code)
         
         cont = self._wait.until(EC.element_to_be_clickable(self._continue_btn))
         self._driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", cont)
