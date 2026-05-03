@@ -16,5 +16,7 @@ class CartPage:
     def proceed_to_checkout(self) -> None:
         self._wait.until(EC.visibility_of_element_located(self._cart_list))
         self._wait.until(EC.visibility_of_element_located(self._cart_item))
-        self._wait.until(EC.element_to_be_clickable(self._checkout_btn)).click()
-        self._wait.until(EC.url_contains("checkout-step-one"))
+        btn = self._wait.until(EC.element_to_be_clickable(self._checkout_btn))
+        self._driver.execute_script("arguments[0].scrollIntoView(true);", btn)
+        btn.click()
+        self._wait.until(EC.url_contains("/checkout-step-one.html"))
