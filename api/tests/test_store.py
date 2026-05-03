@@ -1,10 +1,14 @@
-import random
 import os
+import random
+from datetime import UTC, datetime
+
 import pytest
 import requests
 from api.services.store_service import StoreService
 
 _TEST_ORDER_PET_ID = int(os.getenv("TEST_ORDER_PET_ID", "1"))
+_DEFAULT_ORDER_QUANTITY = 1
+_DEFAULT_ORDER_STATUS = "placed"
 
 
 @pytest.fixture
@@ -18,9 +22,9 @@ def order_payload() -> dict[str, object]:
     return {
         "id": order_id,
         "petId": _TEST_ORDER_PET_ID,
-        "quantity": 1,
-        "shipDate": "2026-05-02T00:00:00.000Z",
-        "status": "placed",
+        "quantity": _DEFAULT_ORDER_QUANTITY,
+        "shipDate": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+        "status": _DEFAULT_ORDER_STATUS,
         "complete": True,
     }
 
@@ -37,13 +41,15 @@ def test_create_order_returns_200(store_service: StoreService, order_payload: di
 
 
 def test_get_order_returns_correct_id(store_service: StoreService, order_payload: dict[str, object]) -> None:
+    order_id: int = order_payload["id"]  # type: ignore[assignment]
     store_service.create_order(order_payload)
-    response = store_service.get_order(int(order_payload["id"]))
+    response = store_service.get_order(order_id)
     assert response.status_code == 200
-    assert response.json()["id"] == order_payload["id"]
+    assert response.json()["id"] == order_id
 
 
 def test_delete_order_returns_200(store_service: StoreService, order_payload: dict[str, object]) -> None:
+    order_id: int = order_payload["id"]  # type: ignore[assignment]
     store_service.create_order(order_payload)
-    response = store_service.delete_order(int(order_payload["id"]))
+    response = store_service.delete_order(order_id)
     assert response.status_code == 200
