@@ -57,7 +57,6 @@ jobs:
   auto-merge-to-developer:
     needs: [api-tests, web-tests]
     runs-on: ubuntu-latest
-    # Roda apenas em push de branches de feature (não em developer nem main)
     if: >-
       success() &&
       github.event_name == 'push' &&
