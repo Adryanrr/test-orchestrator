@@ -50,3 +50,17 @@ def test_delete_user_returns_200(user_service, user_payload):
     user_service.create(user_payload)
     response = user_service.delete(user_payload["username"])
     assert response.status_code == 200
+
+
+def test_get_nonexistent_user_returns_404(user_service: UserService) -> None:
+    response = user_service.get("usuario_inexistente_xyz_abc_999")
+    assert response.status_code == 404
+
+
+@pytest.mark.xfail(
+    reason="Petstore demo API does not enforce credential validation — returns 200 for empty username/password",
+    strict=False,
+)
+def test_login_missing_credentials_returns_400(user_service: UserService) -> None:
+    response = user_service.login("", "")
+    assert response.status_code == 400

@@ -3,6 +3,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+from web.pages._slowmo import pause
+
 JS_SET_INPUT = """
 var nativeSetter = Object.getOwnPropertyDescriptor(
     window.HTMLInputElement.prototype, 'value').set;
@@ -37,12 +39,18 @@ class CheckoutPage:
         self._set_input(self._first_name, first_name)
         self._set_input(self._last_name, last_name)
         self._set_input(self._zip_code, zip_code)
+        pause()
         self._js_click(self._continue_btn)
         self._wait.until(EC.url_contains("checkout-step-two.html"))
+        pause()
 
     def finish(self) -> None:
+        pause()
         self._js_click(self._finish_btn)
         self._wait.until(EC.url_contains("checkout-complete.html"))
+        pause()
 
     def get_confirmation_message(self) -> str:
-        return self._wait.until(EC.visibility_of_element_located(self._confirmation)).text
+        result = self._wait.until(EC.visibility_of_element_located(self._confirmation)).text
+        pause()
+        return result

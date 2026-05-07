@@ -1,3 +1,4 @@
+import os
 from collections.abc import Generator
 from pathlib import Path
 
@@ -11,7 +12,8 @@ REPORTS_DIR = Path(__file__).resolve().parent.parent / "reports"
 @pytest.fixture(scope="function")
 def driver(request: pytest.FixtureRequest) -> Generator[webdriver.Chrome, None, None]:
     options = Options()
-    options.add_argument("--headless=new")
+    if os.getenv("HEADLESS", "true").lower() != "false":
+        options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")

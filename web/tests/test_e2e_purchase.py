@@ -22,3 +22,19 @@ def test_complete_purchase_flow(driver):
     checkout.finish()
 
     assert checkout.get_confirmation_message() == "Thank you for your order!"
+
+
+def test_login_invalid_credentials(driver) -> None:
+    login = LoginPage(driver)
+    login.open()
+    login.fill_credentials("standard_user", "wrong_password")
+    login.attempt_login()
+    assert "Username and password do not match" in login.get_error_message()
+
+
+def test_login_locked_user(driver) -> None:
+    login = LoginPage(driver)
+    login.open()
+    login.fill_credentials("locked_out_user", "secret_sauce")
+    login.attempt_login()
+    assert "locked out" in login.get_error_message()

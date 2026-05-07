@@ -11,3 +11,7 @@ build/
 .DS_Store
 .venv/
 venv/
+.superpowers/brainstorm/47804-1778117487/state/server.pid
+.gitignore
+.gitignore
+.superpowers/brainstorm/47804-1778117487/state/server.log

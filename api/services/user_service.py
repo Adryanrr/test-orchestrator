@@ -17,3 +17,9 @@ class UserService:
 
     def delete(self, username: str) -> requests.Response:
         return self._session.delete(f"{self._base_url}/user/{username}")
+
+    def login(self, username: str, password: str) -> requests.Response:
+        return self._session.get(
+            f"{self._base_url}/user/login",
+            params={"username": username, "password": password},
+        )
