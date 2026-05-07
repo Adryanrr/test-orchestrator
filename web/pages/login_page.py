@@ -9,6 +9,7 @@ class LoginPage:
     _username = (By.ID, "user-name")
     _password = (By.ID, "password")
     _login_btn = (By.ID, "login-button")
+    _error_msg = (By.CSS_SELECTOR, "[data-test='error']")
 
     def __init__(self, driver: WebDriver) -> None:
         self._driver = driver
@@ -25,3 +26,10 @@ class LoginPage:
     def click_login(self) -> None:
         self._wait.until(EC.element_to_be_clickable(self._login_btn)).click()
         self._wait.until(EC.url_contains("inventory"))
+
+    def attempt_login(self) -> None:
+        """Click login sem aguardar redirecionamento — para cenários de erro."""
+        self._wait.until(EC.element_to_be_clickable(self._login_btn)).click()
+
+    def get_error_message(self) -> str:
+        return self._wait.until(EC.visibility_of_element_located(self._error_msg)).text
