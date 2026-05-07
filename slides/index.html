@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Orchestrator — Automação de Testes</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <style>
+    :root { --r-main-font-size: 26px; }
+    .reveal pre { box-shadow: none; width: 100%; }
+    .reveal pre code { max-height: 420px; font-size: 0.72em; line-height: 1.5; }
+    .reveal h2 { color: #a78bfa; font-size: 1.4em; }
+    .reveal h3 { color: #818cf8; font-size: 1.05em; }
+    .tag { display: inline-block; background: #1e1b4b; color: #a78bfa;
+           border: 1px solid #4338ca; border-radius: 4px; padding: 3px 12px;
+           font-size: 0.55em; margin: 0 4px; }
+    .green { color: #4ade80; }
+    .red   { color: #f87171; }
+    .muted { color: #9ca3af; font-size: 0.75em; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; text-align: left; }
+    table { font-size: 0.68em; }
+    td, th { padding: 7px 13px !important; }
+    .reveal table th { background: #1e1b4b; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1. Capa -->
+    <section>
+      <h1 style="font-size:1.8em">Test Orchestrator</h1>
+      <p style="color:#9ca3af">Monorepo de Automação de Testes em Python</p>
+      <div style="margin:24px 0">
+        <span class="tag">Python 3.12</span>
+        <span class="tag">pytest</span>
+        <span class="tag">Selenium</span>
+        <span class="tag">requests</span>
+        <span class="tag">GitHub Actions</span>
+      </div>
+      <p><img src="https://github.com/Adryanrr/test-orchestrator/actions/workflows/ci.yml/badge.svg" alt="CI Status"></p>
+      <p class="muted">github.com/Adryanrr/test-orchestrator</p>
+    </section>
+
+    <!-- 2. O que este projeto testa -->
+    <section>
+      <h2>O que este projeto testa?</h2>
+      <div class="two-col" style="margin-top:1em">
+        <div>
+          <h3>REST API — Swagger Petstore</h3>
+          <ul style="font-size:0.78em;line-height:1.8">
+            <li>Recursos: <strong>Pet, Store, User</strong></li>
+            <li>CRUD completo por recurso</li>
+            <li>Cenários positivos e negativos</li>
+            <li>HTTP client: <code>requests</code></li>
+          </ul>
+        </div>
+        <div>
+          <h3>Web E2E — SauceDemo</h3>
+          <ul style="font-size:0.78em;line-height:1.8">
+            <li>Fluxo completo: login → carrinho → checkout</li>
+            <li>Login válido e inválido</li>
+            <li>Headless Chrome no CI</li>
+            <li>Browser: <code>selenium</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Monorepo -->
+    <section>
+      <h2>Arquitetura — Monorepo</h2>
+      <pre><code class="language-text" data-trim>
+test-orchestrator/
+├── api/
+│   ├── services/        ← Service Layer (encapsula HTTP)
+│   │   ├── pet_service.py
+│   │   ├── store_service.py
+│   │   └── user_service.py
+│   ├── tests/           ← Asserções de comportamento
+│   └── conftest.py      ← Fixtures: api_session, base_url
+├── web/
+│   ├── pages/           ← Page Object Model
+│   │   ├── login_page.py
+│   │   ├── inventory_page.py
+│   │   ├── cart_page.py
+│   │   └── checkout_page.py
+│   ├── tests/           ← Cenários E2E
+│   └── conftest.py      ← Fixture: driver + screenshot em falha
+└── .github/workflows/ci.yml
+      </code></pre>
+      <p class="muted">Módulos independentes — pipeline e relatórios compartilhados</p>
+    </section>
+
+    <!-- 4. Service Layer -->
+    <section>
+      <h2>Service Layer Pattern</h2>
+      <pre><code class="language-python" data-trim>
+class PetService:
+    def __init__(self, session: requests.Session, base_url: str) -> None:
+        self._session = session
+        self._base_url = base_url
+
+    def create(self, payload: dict[str, object]) -> requests.Response:
+        return self._session.post(f"{self._base_url}/pet", json=payload)
+
+    def get(self, pet_id: int) -> requests.Response:
+        return self._session.get(f"{self._base_url}/pet/{pet_id}")
+
+    def delete(self, pet_id: int) -> requests.Response:
+        return self._session.delete(f"{self._base_url}/pet/{pet_id}")
+      </code></pre>
+      <p class="muted">Trocar <code>requests</code> por <code>httpx</code>? Muda só aqui — testes intactos.</p>
+    </section>
+
+    <!-- 5. Page Object Model -->
+    <section>
+      <h2>Page Object Model</h2>
+      <pre><code class="language-python" data-trim>
+class LoginPage:
+    _username  = (By.ID, "user-name")
+    _login_btn = (By.ID, "login-button")
+    _error_msg = (By.CSS_SELECTOR, "[data-test='error']")
+
+    def fill_credentials(self, username: str, password: str) -> None:
+        self._wait.until(EC.visibility_of_element_located(
+            self._username)).send_keys(username)
+
+    def click_login(self) -> None:
+        self._wait.until(EC.element_to_be_clickable(self._login_btn)).click()
+        self._wait.until(EC.url_contains("inventory"))
+
+    def get_error_message(self) -> str:
+        return self._wait.until(EC.visibility_of_element_located(
+            self._error_msg)).text
+      </code></pre>
+      <p class="muted">Seletor muda em 1 lugar — nenhum teste quebra.</p>
+    </section>
+
+    <!-- 6. Fixtures -->
+    <section>
+      <h2>Fixtures &amp; Conftest</h2>
+      <pre><code class="language-python" data-trim>
+# api/conftest.py — sessão HTTP reutilizada em todos os testes
+@pytest.fixture(scope="session")
+def api_session() -> Generator[requests.Session, None, None]:
+    session = requests.Session()
+    session.headers.update({"Content-Type": "application/json"})
+    yield session
+    session.close()
+
+# web/conftest.py — screenshot automático quando um teste falha
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, f"rep_{rep.when}", rep)
+      </code></pre>
+      <p class="muted">Injeção de dependências — zero boilerplate nos testes.</p>
+    </section>
+
+    <!-- 7. Positivos vs Negativos -->
+    <section>
+      <h2>Testes Positivos vs Negativos</h2>
+      <div class="two-col">
+        <div>
+          <h3 class="green">✅ Positivo</h3>
+          <pre><code class="language-python" data-trim>
+def test_get_pet_returns_correct_id(
+    pet_service, pet_payload
+):
+    pet_service.create(pet_payload)
+    response = pet_service.get(
+        pet_payload["id"]
+    )
+    assert response.status_code == 200
+    assert response.json()["id"] == \
+        pet_payload["id"]
+          </code></pre>
+        </div>
+        <div>
+          <h3 class="red">❌ Negativo</h3>
+          <pre><code class="language-python" data-trim>
+def test_get_nonexistent_pet_returns_404(
+    pet_service
+):
+    response = pet_service.get(
+        9_999_999_999
+    )
+    assert response.status_code == 404
+          </code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Cobertura de negativos -->
+    <section>
+      <h2>Cobertura de Casos Negativos</h2>
+      <table>
+        <thead>
+          <tr><th>Recurso</th><th>Cenário</th><th>Código esperado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pet API</td><td>GET ID inexistente</td><td class="red">404</td></tr>
+          <tr><td>Pet API</td><td>POST payload vazio</td><td class="red">400 / 405</td></tr>
+          <tr><td>Store API</td><td>GET order inexistente</td><td class="red">404</td></tr>
+          <tr><td>User API</td><td>GET username inexistente</td><td class="red">404</td></tr>
+          <tr><td>User API</td><td>Login sem credenciais</td><td class="red">400</td></tr>
+          <tr><td>Web E2E</td><td>Login senha errada</td><td class="red">erro no DOM</td></tr>
+          <tr><td>Web E2E</td><td>Usuário bloqueado</td><td class="red">erro no DOM</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 9. Pipeline CI/CD -->
+    <section>
+      <h2>Pipeline CI/CD</h2>
+      <pre><code class="language-text" data-trim>
+push / pull_request
+       │
+       ├── api-tests ─────────────────────────────┐
+       │   pytest api/tests/ -v                   │
+       │                                          ├─► auto-merge → developer
+       └── web-tests ─────────────────────────────┘   (feature branches)
+           pytest web/tests/ -v
+
+✅ Ambos passam → squash merge automático via gh pr merge
+❌ Qualquer falha → branch bloqueada, sem merge
+      </code></pre>
+      <p class="muted">
+        concurrency group cancela runs duplicados no mesmo ref
+      </p>
+    </section>
+
+    <!-- 10. Branch Strategy -->
+    <section>
+      <h2>Branch Strategy</h2>
+      <pre><code class="language-text" data-trim>
+feat/* ou fix/*
+      │
+      │  push → CI (api-tests + web-tests em paralelo)
+      ▼
+  ✅ verde → PR automático → squash merge → developer
+  ❌ falha → branch bloqueada, sem merge
+
+developer
+      │  PR manual + aprovação humana
+      ▼
+    main
+      </code></pre>
+      <table style="margin-top:0.5em">
+        <tr><th>Branch</th><th>Merge via</th><th>Aprovação humana</th></tr>
+        <tr><td><code>feat/*</code></td><td>CI auto-merge (squash)</td><td>Não</td></tr>
+        <tr><td><code>developer</code></td><td>PR manual</td><td>Sim</td></tr>
+        <tr><td><code>main</code></td><td>PR manual</td><td>Sim (obrigatório)</td></tr>
+      </table>
+    </section>
+
+    <!-- 11. Commits Semânticos -->
+    <section>
+      <h2>Commits Semânticos</h2>
+      <pre><code class="language-text" data-trim>
+feat: estrutura inicial do monorepo Python
+fix:  usar JS nativo para inputs React no checkout
+ci:   habilitar permissão para criar PRs via Actions
+docs: adicionar ARCHITECTURE.md
+fix:  remover scrollIntoView de todas as page objects
+ci:   unificar workflows para corrigir race condition
+test: adicionar casos negativos nos testes de API
+      </code></pre>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:0.65em;margin-top:1em;text-align:left">
+        <div><code>feat:</code> nova funcionalidade</div>
+        <div><code>fix:</code>  correção de bug</div>
+        <div><code>ci:</code>   pipeline / workflow</div>
+        <div><code>docs:</code> documentação</div>
+        <div><code>test:</code> adição de testes</div>
+        <div><code>refactor:</code> sem mudança de comportamento</div>
+      </div>
+    </section>
+
+    <!-- 12. Demo ao vivo -->
+    <section>
+      <h2>Demo ao Vivo</h2>
+      <div style="margin:1.5em auto;max-width:640px;background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:24px;text-align:left;font-family:monospace;font-size:0.75em;line-height:1.8">
+        <span style="color:#9ca3af">$ </span>pytest api/tests/ web/tests/ -v<br><br>
+        <span class="green">api/tests/test_pet.py::test_create_pet_returns_200 PASSED</span><br>
+        <span class="green">api/tests/test_pet.py::test_get_nonexistent_pet_returns_404 PASSED</span><br>
+        <span class="green">api/tests/test_user.py::test_login_missing_credentials_returns_400 PASSED</span><br>
+        <span class="green">web/tests/test_e2e_purchase.py::test_complete_purchase_flow PASSED</span><br>
+        <span class="green">web/tests/test_e2e_purchase.py::test_login_invalid_credentials PASSED</span><br>
+        <span class="green">web/tests/test_e2e_purchase.py::test_login_locked_user PASSED</span><br>
+        <br>
+        <span class="green">═══════════ N passed in X.XXs ═══════════</span>
+      </div>
+      <p class="muted">Terminal ao lado — execução em tempo real</p>
+    </section>
+
+    <!-- 13. Conclusão -->
+    <section>
+      <h2>Conclusão</h2>
+      <div class="two-col" style="margin:1em 0">
+        <div>
+          <h3>Cobertura de testes</h3>
+          <ul style="font-size:0.75em;line-height:1.9">
+            <li>Pet API: 5 positivos + 2 negativos</li>
+            <li>Store API: 3 positivos + 1 negativo</li>
+            <li>User API: 4 positivos + 2 negativos</li>
+            <li>Web E2E: 1 positivo + 2 negativos</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Padrões aplicados</h3>
+          <ul style="font-size:0.75em;line-height:1.9">
+            <li>Service Layer (API)</li>
+            <li>Page Object Model (Web)</li>
+            <li>Fixtures pytest (injeção)</li>
+            <li>Commits semânticos</li>
+            <li>Gitflow + CI/CD automático</li>
+          </ul>
+        </div>
+      </div>
+      <p><a href="https://github.com/Adryanrr/test-orchestrator" style="color:#a78bfa">
+        github.com/Adryanrr/test-orchestrator
+      </a></p>
+    </section>
+
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    controls: true,
+    progress: true,
+    plugins: [RevealHighlight]
+  });
+</script>
+</body>
+</html>
