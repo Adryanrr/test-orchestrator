@@ -1,6 +1,6 @@
 import os
 import random
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 import pytest
 import requests
@@ -23,7 +23,7 @@ def order_payload() -> dict[str, object]:
         "id": order_id,
         "petId": _TEST_ORDER_PET_ID,
         "quantity": _DEFAULT_ORDER_QUANTITY,
-        "shipDate": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+        "shipDate": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z"),
         "status": _DEFAULT_ORDER_STATUS,
         "complete": True,
     }
@@ -53,3 +53,8 @@ def test_delete_order_returns_200(store_service: StoreService, order_payload: di
     store_service.create_order(order_payload)
     response = store_service.delete_order(order_id)
     assert response.status_code == 200
+
+
+def test_get_nonexistent_order_returns_404(store_service: StoreService) -> None:
+    response = store_service.get_order(9_999_999_999)
+    assert response.status_code == 404
