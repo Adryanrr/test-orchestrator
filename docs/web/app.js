@@ -4,6 +4,7 @@ const toggle = document.getElementById('theme-toggle');
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   toggle.textContent = theme === 'light' ? '🌙' : '☀️';
+  toggle.setAttribute('aria-label', theme === 'light' ? 'Alternar para tema escuro' : 'Alternar para tema claro');
   localStorage.setItem('theme', theme);
 }
 
@@ -36,10 +37,16 @@ document.querySelectorAll('pre').forEach(pre => {
   btn.addEventListener('click', () => {
     const codeEl = pre.querySelector('code');
     const text = codeEl ? codeEl.textContent : pre.textContent;
-    if (!navigator.clipboard) { btn.textContent = 'Erro!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); return; }
+    const reset = () => setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
+    if (!navigator.clipboard) {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); btn.textContent = 'Copiado!'; } catch { btn.textContent = 'Erro!'; }
+      document.body.removeChild(ta); reset(); return;
+    }
     navigator.clipboard.writeText(text)
-      .then(() => { btn.textContent = 'Copiado!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); })
-      .catch(() => { btn.textContent = 'Erro!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); });
+      .then(() => { btn.textContent = 'Copiado!'; reset(); })
+      .catch(() => { btn.textContent = 'Erro!'; reset(); });
   });
   pre.appendChild(btn);
 });

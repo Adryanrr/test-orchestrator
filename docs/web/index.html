@@ -9,9 +9,9 @@
 </head>
 <body>
 
-<button id="theme-toggle">☀️</button>
+<button id="theme-toggle" aria-label="Alternar para tema claro">☀️</button>
 
-<nav id="sidebar">
+<nav id="sidebar" aria-label="Navegação principal">
   <div class="sidebar-logo">Test Orchestrator</div>
   <ul>
     <li><a href="#hero">Início</a></li>
@@ -249,10 +249,10 @@ test: adicionar casos negativos nos testes de API</code></pre>
     </p>
 
     <h3>Testes de API</h3>
-    <iframe class="report" src="../../reports/api-report.html" title="API Test Report"></iframe>
+    <iframe class="report" src="../../reports/api-report.html" title="API Test Report" sandbox="allow-same-origin allow-scripts"></iframe>
 
     <h3>Testes Web E2E</h3>
-    <iframe class="report" src="../../reports/web-report.html" title="Web Test Report"></iframe>
+    <iframe class="report" src="../../reports/web-report.html" title="Web Test Report" sandbox="allow-same-origin allow-scripts"></iframe>
   </section>
 
 </main>
