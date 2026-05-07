@@ -34,11 +34,12 @@ document.querySelectorAll('pre').forEach(pre => {
   btn.className = 'copy-btn';
   btn.textContent = 'Copiar';
   btn.addEventListener('click', () => {
-    const text = pre.querySelector('code').textContent;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'Copiado!';
-      setTimeout(() => { btn.textContent = 'Copiar'; }, 2000);
-    });
+    const codeEl = pre.querySelector('code');
+    const text = codeEl ? codeEl.textContent : pre.textContent;
+    if (!navigator.clipboard) { btn.textContent = 'Erro!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); return; }
+    navigator.clipboard.writeText(text)
+      .then(() => { btn.textContent = 'Copiado!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); })
+      .catch(() => { btn.textContent = 'Erro!'; setTimeout(() => { btn.textContent = 'Copiar'; }, 2000); });
   });
   pre.appendChild(btn);
 });
