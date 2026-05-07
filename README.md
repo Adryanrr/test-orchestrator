@@ -111,13 +111,36 @@ pip install -r web/requirements.txt
 pytest api/tests/ -v
 ```
 
-### Testes Web E2E
+### Testes Web E2E — modo headless (padrão / CI)
 
 ```bash
 pytest web/tests/ -v
 ```
 
-> Por padrão os testes Web rodam em modo **headless**. Para visualizar o navegador, comente a linha `--headless=new` em `web/conftest.py`.
+O Chrome roda sem janela visível. É o mesmo modo usado no GitHub Actions.
+
+### Testes Web E2E — modo visual (demo / desenvolvimento)
+
+```bash
+HEADLESS=false pytest web/tests/ -v
+```
+
+Abre o Chrome com interface gráfica. Útil para depurar ou demonstrar ao vivo.
+
+### Testes Web E2E — modo demo com câmera lenta
+
+```bash
+HEADLESS=false DEMO_DELAY=2 pytest web/tests/test_e2e_purchase.py::test_complete_purchase_flow -v
+```
+
+Pausa `N` segundos entre cada etapa (login → inventário → carrinho → checkout → confirmação).  
+Ajuste `DEMO_DELAY` conforme necessário: `1` rápido, `2` confortável, `3` lento.
+
+### Todos os testes com cobertura de código
+
+```bash
+pytest api/tests/ --cov=api --cov-report=term-missing
+```
 
 ### Com relatório HTML
 
