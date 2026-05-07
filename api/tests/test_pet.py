@@ -75,6 +75,10 @@ def test_get_nonexistent_pet_returns_404(pet_service: PetService) -> None:
     assert response.status_code == 404
 
 
+@pytest.mark.xfail(
+    reason="Petstore demo API does not enforce payload validation — returns 200 for empty body",
+    strict=False,
+)
 def test_create_pet_invalid_payload_returns_error(pet_service: PetService) -> None:
     response = pet_service.create({})
-    assert response.status_code in (200, 400, 405, 500)
+    assert response.status_code in (400, 405, 500)

@@ -57,6 +57,10 @@ def test_get_nonexistent_user_returns_404(user_service) -> None:
     assert response.status_code == 404
 
 
+@pytest.mark.xfail(
+    reason="Petstore demo API does not enforce credential validation — returns 200 for empty username/password",
+    strict=False,
+)
 def test_login_missing_credentials_returns_400(user_service) -> None:
     response = user_service.login("", "")
-    assert response.status_code in (200, 400)
+    assert response.status_code == 400
